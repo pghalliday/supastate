@@ -1,10 +1,31 @@
 {
-  "name": "supastate",
+  "name": "@pghalliday/supastate",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "description": "Idempotent supabase migration management",
-  "main": "index.js",
+  "exports": "./lib/src/index.js",
+  "bin": "./bin/index.js",
+  "type": "module",
+  "files": [
+    "lib/**/*",
+    "bin/**/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf lib",
+    "prebuild": "npm run clean",
+    "build": "tsc --project tsconfig.json",
+    "cleanTest": "rimraf test/lib",
+    "prebuildTest": "npm run cleanTest",
+    "buildTest": "tsc --project test/tsconfig.json",
+    "prepublishOnly": "npm run build",
+    "initCurrentJson": "npm run build && node bin/index.js initCurrentJson -c test/supastate.json",
+    "createMigration": "npm run build && npm run buildTest && node bin/index.js createMigration -c test/supastate.json",
+    "applyMigration": "npm run build && node bin/index.js applyMigration -c test/supastate.json",
+    "help": "npm run build && node bin/index.js --help",
+    "version": "npm run build && node bin/index.js --version"
   },
   "repository": {
     "type": "git",
@@ -15,5 +36,20 @@
   "bugs": {
     "url": "https://github.com/pghalliday/supastate/issues"
   },
-  "homepage": "https://github.com/pghalliday/supastate#readme"
+  "homepage": "https://github.com/pghalliday/supastate#readme",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "lodash": "^4.17.21",
+    "luxon": "^3.5.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@tsconfig/node-lts": "^22.0.1",
+    "@types/lodash": "^4.17.13",
+    "@types/luxon": "^3.4.2",
+    "@types/node": "^22.10.2",
+    "@types/uuid": "^10.0.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2"
+  }
 }

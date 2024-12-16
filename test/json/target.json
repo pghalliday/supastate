@@ -1,0 +1,45 @@
+{
+  "timestamp": "20241217015028",
+  "version": 0,
+  "entities": {
+    "0f216e0e-33ae-4e9b-baa8-7e234caaf371": {
+      "type": "schema",
+      "id": "0f216e0e-33ae-4e9b-baa8-7e234caaf371",
+      "name": "auth",
+      "external": true
+    },
+    "516c609c-eddf-4f17-ab47-d89323f8a659": {
+      "type": "table",
+      "id": "516c609c-eddf-4f17-ab47-d89323f8a659",
+      "name": "users",
+      "schemaId": "0f216e0e-33ae-4e9b-baa8-7e234caaf371",
+      "external": true
+    },
+    "20133e93-9ecd-4522-82e3-3e0ec1f50953": {
+      "type": "schema",
+      "id": "20133e93-9ecd-4522-82e3-3e0ec1f50953",
+      "name": "public",
+      "external": true
+    },
+    "323db051-c33f-4ddb-a776-ec66f18ae4e3": {
+      "type": "table",
+      "id": "323db051-c33f-4ddb-a776-ec66f18ae4e3",
+      "name": "t1",
+      "schemaId": "20133e93-9ecd-4522-82e3-3e0ec1f50953",
+      "external": false
+    },
+    "c5841cd7-02f4-4574-8aeb-72c2e302c699": {
+      "type": "schema",
+      "id": "c5841cd7-02f4-4574-8aeb-72c2e302c699",
+      "name": "s1",
+      "external": false
+    },
+    "14e6b433-bbe3-4ac4-97e1-88f126d3aaac": {
+      "type": "table",
+      "id": "14e6b433-bbe3-4ac4-97e1-88f126d3aaac",
+      "name": "t1",
+      "schemaId": "c5841cd7-02f4-4574-8aeb-72c2e302c699",
+      "external": false
+    }
+  }
+}
