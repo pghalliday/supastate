@@ -5,7 +5,7 @@
   },
   "version": "1.0.0",
   "description": "Idempotent supabase migration management",
-  "exports": "./lib/src/index.js",
+  "exports": "./lib/index.js",
   "bin": "./bin/index.js",
   "type": "module",
   "files": [

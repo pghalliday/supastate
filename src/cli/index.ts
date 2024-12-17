@@ -9,13 +9,15 @@ import type {Entities} from "../models/Entities.js";
 import {Supastate} from "../Supastate.js";
 import {migrate} from "../migration/migrate.js";
 import {initEntityControllers} from "../controllers/EntityControllers.js";
-// @ts-ignore <-- TODO remove this line, unless that gives an error
-import conf from "../../package.json" with { type: "json" };
+const __dirname = import.meta.dirname;
+
+const packageJson = await readFile(resolve(__dirname, '../../package.json'), 'utf8');
+const packageConf = JSON.parse(packageJson);
 
 export const program = new Command()
-    .name(conf.name)
-    .description(conf.description)
-    .version(conf.version);
+    .name(packageConf.name)
+    .description(packageConf.description)
+    .version(packageConf.version);
 
 program
     .option('-c, --config <config>', 'Path to the supastate configuration', './supastate.json')

@@ -1,3 +1,3 @@
 #!/usr/bin/env node
-import {program} from "../lib/src/cli/index.js";
+import {program} from "../lib/cli/index.js";
 await program.parseAsync(process.argv);
