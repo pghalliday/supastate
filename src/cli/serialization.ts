@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import {now} from "./timestamp.js";
-import type {Entities} from "../models/Entities.js";
+import type {Entities} from "../entities/models/Entities.js";
 
 const CURRENT_VERSION = 0;
 

@@ -1,0 +1,7 @@
+CREATE SCHEMA "s1";
+CREATE TABLE "public"."t1" ();
+CREATE TABLE "s1"."t1" ();
+CREATE TABLE "s1"."t2" ();
+ALTER TABLE "s1"."t2" ADD "id" uuid;
+ALTER TABLE "s1"."t2" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "s1"."t2" ADD PRIMARY KEY ("id");

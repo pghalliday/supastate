@@ -5,10 +5,10 @@ import {deserialize, serialize, type Serialized} from "./serialization.js";
 import {newerThan, timestampedFileName, toISO} from "./timestamp.js";
 import {createConfig} from "./types/Config.js";
 import type {Options} from "./types/Options.js";
-import type {Entities} from "../models/Entities.js";
+import type {Entities} from "../entities/models/Entities.js";
 import {Supastate} from "../Supastate.js";
-import {migrate} from "../migration/migrate.js";
-import {initEntityControllers} from "../controllers/EntityControllers.js";
+import {migrate} from "../entities/migration/migrate.js";
+import {initEntityControllers} from "../entities/controllers/EntityControllers.js";
 const __dirname = import.meta.dirname;
 
 const packageJson = await readFile(resolve(__dirname, '../../package.json'), 'utf8');
