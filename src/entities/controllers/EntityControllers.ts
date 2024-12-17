@@ -12,6 +12,10 @@ import {COLUMN_TYPE} from "../models/Column.js";
 import {ColumnController} from "./ColumnController.js";
 import {PRIMARY_KEY_CONSTRAINT_TYPE} from "../models/PrimaryKeyConstraint.js";
 import {PrimaryKeyConstraintController} from "./PrimaryKeyConstraintController.js";
+import {FOREIGN_KEY_CONSTRAINT_TYPE} from "../models/ForeignKeyConstraint.js";
+import {ForeignKeyConstraintController} from "./ForeignKeyConstraintController.js";
+import {NOT_NULL_CONSTRAINT_TYPE} from "../models/NotNullConstraint.js";
+import {NotNullConstraintController} from "./NotNullConstraintController.js";
 
 const {forIn} = _;
 
@@ -29,6 +33,10 @@ function createEntityController(entity: Entity, entities: Entities): EntityContr
             return new ColumnController(entity, entities);
         case PRIMARY_KEY_CONSTRAINT_TYPE:
             return new PrimaryKeyConstraintController(entity, entities);
+        case FOREIGN_KEY_CONSTRAINT_TYPE:
+            return new ForeignKeyConstraintController(entity, entities);
+        case NOT_NULL_CONSTRAINT_TYPE:
+            return new NotNullConstraintController(entity, entities);
         default:
             const _exhaustiveCheck: never = entity;
             return _exhaustiveCheck;

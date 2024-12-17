@@ -8,6 +8,16 @@ import {
     PrimaryKeyConstraint,
     PrimaryKeyConstraintParams
 } from "./entities/models/PrimaryKeyConstraint.js";
+import {
+    ForeignKeyConstraint,
+    ForeignKeyConstraintParams,
+    initForeignKeyConstraint
+} from "./entities/models/ForeignKeyConstraint.js";
+import {
+    initNotNullConstraint,
+    NotNullConstraint,
+    NotNullConstraintParams
+} from "./entities/models/NotNullConstraint.js";
 
 export class Supastate {
     constructor(private entities: Entities) {}
@@ -40,5 +50,17 @@ export class Supastate {
         const primaryKeyConstraint = initPrimaryKeyConstraint(params);
         this.entities[primaryKeyConstraint.id] = primaryKeyConstraint;
         return primaryKeyConstraint;
+    }
+
+    addForeignKeyConstraint(params: ForeignKeyConstraintParams): ForeignKeyConstraint {
+        const foreignKeyConstraint = initForeignKeyConstraint(params);
+        this.entities[foreignKeyConstraint.id] = foreignKeyConstraint;
+        return foreignKeyConstraint;
+    }
+
+    addNotNullConstraint(params: NotNullConstraintParams): NotNullConstraint {
+        const notNullConstraint = initNotNullConstraint(params);
+        this.entities[notNullConstraint.id] = notNullConstraint;
+        return notNullConstraint;
     }
 }

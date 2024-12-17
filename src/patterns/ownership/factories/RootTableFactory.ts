@@ -1,16 +1,6 @@
-import {Supastate} from "../../Supastate.js";
-import {Table} from "../../entities/models/Table.js";
-import type {Schema} from "../../entities/models/Schema.js";
-import {Column} from "../../entities/models/Column.js";
-import {PrimaryKeyConstraint} from "../../entities/models/PrimaryKeyConstraint.js";
-import {RLSEnabled} from "../../entities/models/RLSEnabled.js";
-
-export interface RootTable {
-    table: Table;
-    primaryKeyColumn: Column;
-    primaryKeyConstraint: PrimaryKeyConstraint;
-    rlsSetting: RLSEnabled;
-}
+import {Supastate} from "../../../Supastate.js";
+import type {Schema} from "../../../entities/models/Schema.js";
+import {RootTable} from "../models/RootTable.js";
 
 export interface RootTableParams {
     name: string;
@@ -36,6 +26,7 @@ export class RootTableFactory {
             external: params.external,
         });
         const primaryKeyConstraint = this.supastate.addPrimaryKeyConstraint({
+            name: `${table.name}_${primaryKeyColumn.name}_pkey`,
             table: table,
             columns: [primaryKeyColumn],
             external: params.external,

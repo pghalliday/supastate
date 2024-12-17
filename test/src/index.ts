@@ -1,4 +1,4 @@
-import {Supastate, RootTableFactory} from "@pghalliday/supastate";
+import {Supastate, RootTableFactory, InformationTableFactory} from "@pghalliday/supastate";
 
 export function configure(supastate: Supastate): void {
     const authSchema = supastate.addSchema({name: 'auth', external: true});
@@ -18,4 +18,14 @@ export function configure(supastate: Supastate): void {
         primaryKeyColumnName: 'id',
         primaryKeyColumnType: 'uuid',
     });
+
+    const informationTableFactory = new InformationTableFactory(supastate);
+
+    const s1t3InfoTable = informationTableFactory.addInformationTable({
+        name: 't3',
+        schema: s1Schema,
+        foreignKeyColumnName: 'id',
+        ownerTable: s1t2RootTable,
+    });
+
 }

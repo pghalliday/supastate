@@ -27,6 +27,10 @@ export class PrimaryKeyConstraintController implements EntityController {
         );
     }
 
+    getSafeName(): string {
+        return `"${this.primaryKeyConstraint.name}"`;
+    }
+
     isExternal(): boolean {
         return this.primaryKeyConstraint.external;
     }
@@ -45,11 +49,11 @@ export class PrimaryKeyConstraintController implements EntityController {
 
     create(): string {
         const primaryKeyColumns = map(this.columnControllers, columnController => columnController.getSafeName());
-        return `ALTER TABLE ${this.tableController.getFullSafeName()} ADD PRIMARY KEY (${join(primaryKeyColumns, ', ')});\n`;
+        return `ALTER TABLE ${this.tableController.getFullSafeName()} ADD CONSTRAINT ${this.getSafeName()} PRIMARY KEY (${join(primaryKeyColumns, ', ')});\n`;
     }
 
     drop(): string {
-        return `ALTER TABLE ${this.tableController.getFullSafeName()} DROP PRIMARY KEY;\n`;
+        return `ALTER TABLE ${this.tableController.getFullSafeName()} DROP CONSTRAINT ${this.getSafeName()};\n`;
     }
 
     getDependencies(): string[] {
@@ -62,6 +66,7 @@ export class PrimaryKeyConstraintController implements EntityController {
     match(toMatch: EntityController): boolean {
         if (toMatch instanceof PrimaryKeyConstraintController) {
             return (
+                this.primaryKeyConstraint.name === toMatch.primaryKeyConstraint.name &&
                 this.tableController.match(toMatch.tableController) &&
                 // Check the difference both ways as the method only returns
                 // elements from the first array

@@ -33,6 +33,10 @@ export class ColumnController implements EntityController {
         return `${this.tableController.getFullSafeName()}.${this.getSafeName()}`;
     }
 
+    getTableFullSafeName(): string {
+        return this.tableController.getFullSafeName();
+    }
+
     isExternal(): boolean {
         return this.column.external;
     }
