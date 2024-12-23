@@ -1,4 +1,4 @@
-import {Supastate, RootTableFactory, InformationTableFactory} from "@pghalliday/supastate";
+import {Supastate, RootTableFactory, InformationTableFactory, CollectionTableFactory} from "@pghalliday/supastate";
 
 export function configure(supastate: Supastate): void {
     const authSchema = supastate.addSchema({name: 'auth', external: true});
@@ -25,6 +25,17 @@ export function configure(supastate: Supastate): void {
         name: 't3',
         schema: s1Schema,
         foreignKeyColumnName: 'id',
+        ownerTable: s1t2RootTable,
+    });
+
+    const collectionTableFactory = new CollectionTableFactory(supastate);
+
+    const s1t4ColTable = collectionTableFactory.addCollectionTable({
+        name: 't4',
+        schema: s1Schema,
+        primaryKeyColumnName: 'id',
+        primaryKeyColumnType: 'uuid',
+        foreignKeyColumnName: 'ownerId',
         ownerTable: s1t2RootTable,
     });
 
