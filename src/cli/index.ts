@@ -67,12 +67,12 @@ program
         await mkdir(options.config.migrationsDir, {recursive: true});
         await Promise.all(
             (await readdir(options.config.migrationsDir, {recursive: true}))
-            .filter(newerThan(currentTimestamp, options.config.name))
-            .map(async migrationFile => {
-                const resolvedMigrationFile = resolve(options.config.migrationsDir, migrationFile);
-                console.log(`Deleting migration file ${resolvedMigrationFile}`);
-                await unlink(resolvedMigrationFile);
-            })
+                .filter(newerThan(currentTimestamp, options.config.name))
+                .map(async migrationFile => {
+                    const resolvedMigrationFile = resolve(options.config.migrationsDir, migrationFile);
+                    console.log(`Deleting migration file ${resolvedMigrationFile}`);
+                    await unlink(resolvedMigrationFile);
+                })
         );
         // construct the file name for the new migration
         const migrationFile = timestampedFileName(targetTimestamp, options.config.name);
@@ -81,6 +81,29 @@ program
         console.log(`Generating migration file ${resolvedMigrationFile}`);
         await writeFile(resolvedMigrationFile, migrate(
             initEntityControllers(currentEntities),
+            initEntityControllers(targetEntities)
+        ));
+    });
+
+program
+    .command('createState')
+    .description(
+        'Create the SQL script for the state described by the supastate module. ' +
+        'Note that this does not generate the JSON state files or attempt any migration. ' +
+        'This is intended for use in testing library patterns'
+    )
+    .action(async (options: Options) => {
+        console.log(`Reading ${options.config.supastateModule}`);
+        const targetEntities: Entities = {};
+        (await import(options.config.supastateModule)).configure(new Supastate(targetEntities));
+        // construct the file name for the new SQL script
+        const sqlFile = `${options.config.name}.sql`;
+        const resolvedSQLFile = resolve(options.config.migrationsDir, sqlFile);
+        // generate the new SQL script
+        console.log(`Generating SQL script ${resolvedSQLFile}`);
+        await mkdir(options.config.migrationsDir, {recursive: true});
+        await writeFile(resolvedSQLFile, migrate(
+            initEntityControllers({}),
             initEntityControllers(targetEntities)
         ));
     });

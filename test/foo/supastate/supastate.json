@@ -3,5 +3,5 @@
   "supastateModule": "lib/index.js",
   "targetJsonFile": "json/target.json",
   "currentJsonFile": "json/current.json",
-  "migrationsDir": "../supabase/migrations"
+  "migrationsDir": "sql"
 }

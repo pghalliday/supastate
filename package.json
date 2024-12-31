@@ -13,17 +13,13 @@
     "bin/**/*"
   ],
   "scripts": {
+    "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf lib",
     "prebuild": "npm run clean",
     "build": "tsc --project tsconfig.json",
-    "cleanTest": "rimraf test/lib",
-    "prebuildTest": "npm run cleanTest",
-    "buildTest": "tsc --project test/tsconfig.json",
     "prepublishOnly": "npm run build",
-    "initCurrentJson": "npm run build && node bin/index.js initCurrentJson -c test/supastate.json",
-    "createMigration": "npm run build && npm run buildTest && node bin/index.js createMigration -c test/supastate.json",
-    "applyMigration": "npm run build && node bin/index.js applyMigration -c test/supastate.json",
+    "createState": "node bin/index.js createState",
     "help": "npm run build && node bin/index.js --help",
     "version": "npm run build && node bin/index.js --version"
   },

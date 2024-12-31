@@ -13,7 +13,7 @@ export function configure(supastate: Supastate): void {
     const rootTableFactory = new RootTableFactory(supastate);
 
     const s1t2RootTable = rootTableFactory.addRootTable({
-        name: 't2',
+        name: 't2Root',
         schema: s1Schema,
         primaryKeyColumnName: 'id',
         primaryKeyColumnType: 'uuid',
@@ -22,7 +22,7 @@ export function configure(supastate: Supastate): void {
     const informationTableFactory = new InformationTableFactory(supastate);
 
     const s1t3InfoTable = informationTableFactory.addInformationTable({
-        name: 't3',
+        name: 't3Info',
         schema: s1Schema,
         foreignKeyColumnName: 'id',
         ownerTable: s1t2RootTable,
@@ -31,7 +31,7 @@ export function configure(supastate: Supastate): void {
     const collectionTableFactory = new CollectionTableFactory(supastate);
 
     const s1t4ColTable = collectionTableFactory.addCollectionTable({
-        name: 't4',
+        name: 't4Col',
         schema: s1Schema,
         primaryKeyColumnName: 'id',
         primaryKeyColumnType: 'uuid',
