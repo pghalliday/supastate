@@ -18,9 +18,17 @@ import {
     NotNullConstraint,
     NotNullConstraintParams
 } from "./entities/models/NotNullConstraint.js";
+import {initRole, Role, RoleParams} from "./entities/models/Role.js";
+import {initPolicy, Policy, PolicyParams} from "./entities/models/Policy.js";
 
 export class Supastate {
     constructor(private entities: Entities) {}
+
+    addRole(params: RoleParams): Role {
+        const role = initRole(params);
+        this.entities[role.id] = role;
+        return role;
+    }
 
     addSchema(params: SchemaParams): Schema {
         const schema = initSchema(params);
@@ -62,5 +70,11 @@ export class Supastate {
         const notNullConstraint = initNotNullConstraint(params);
         this.entities[notNullConstraint.id] = notNullConstraint;
         return notNullConstraint;
+    }
+
+    addPolicy(params: PolicyParams): Policy {
+        const policy = initPolicy(params);
+        this.entities[policy.id] = policy;
+        return policy;
     }
 }

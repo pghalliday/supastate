@@ -62,4 +62,8 @@ export class RLSEnabledController implements EntityController {
         }
         return false;
     }
+
+    getId(): string {
+        return this.rlsEnabled.id;
+    }
 }

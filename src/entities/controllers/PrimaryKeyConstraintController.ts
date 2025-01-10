@@ -84,4 +84,8 @@ export class PrimaryKeyConstraintController implements EntityController {
         }
         return false;
     }
+
+    getId(): string {
+        return this.primaryKeyConstraint.id;
+    }
 }

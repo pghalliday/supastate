@@ -57,4 +57,8 @@ export class NotNullConstraintController implements EntityController {
         }
         return false;
     }
+
+    getId(): string {
+        return this.notNullConstraint.id;
+    }
 }

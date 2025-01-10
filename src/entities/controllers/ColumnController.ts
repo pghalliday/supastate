@@ -2,12 +2,11 @@ import type {EntityController} from "./EntityController.js";
 import type {Entities} from "../models/Entities.js";
 import assert from "node:assert";
 import {TableController} from "./TableController.js";
-import {RLS_ENABLED_TYPE, RLSEnabled} from "../models/RLSEnabled.js";
-import {TABLE_TYPE} from "../models/Table.js";
 import {Column, COLUMN_TYPE} from "../models/Column.js";
 import {Entity} from "../models/Entity.js";
+import {ExpressionReferenceController} from "./ExpressionReferenceController.js";
 
-export class ColumnController implements EntityController {
+export class ColumnController implements ExpressionReferenceController {
     private readonly column: Column;
     private readonly tableController: TableController;
 
@@ -78,5 +77,9 @@ export class ColumnController implements EntityController {
             );
         }
         return false;
+    }
+
+    getExpressionName(): string {
+        return this.getFullSafeName();
     }
 }

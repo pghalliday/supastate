@@ -1,12 +1,12 @@
 import type {EntityController} from "./EntityController.js";
 import type {Entities} from "../models/Entities.js";
 import {type Table, TABLE_TYPE} from "../models/Table.js";
-import {SCHEMA_TYPE} from "../models/Schema.js";
 import assert from "node:assert";
 import {SchemaController} from "./SchemaController.js";
 import {Entity} from "../models/Entity.js";
+import {ExpressionReferenceController} from "./ExpressionReferenceController.js";
 
-export class TableController implements EntityController {
+export class TableController implements ExpressionReferenceController {
     private readonly table: Table;
     private readonly schemaController: SchemaController;
 
@@ -68,5 +68,9 @@ export class TableController implements EntityController {
             );
         }
         return false;
+    }
+
+    getExpressionName(): string {
+        return this.getFullSafeName();
     }
 }

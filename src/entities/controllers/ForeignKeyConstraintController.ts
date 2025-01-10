@@ -108,4 +108,8 @@ export class ForeignKeyConstraintController implements EntityController {
         }
         return false;
     }
+
+    getId(): string {
+        return this.foreignKeyConstraint.id;
+    }
 }
