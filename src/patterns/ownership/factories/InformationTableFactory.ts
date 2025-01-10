@@ -20,22 +20,22 @@ export class InformationTableFactory {
             schema: params.schema,
             external: params.external,
         });
-        const foreignKeyColumn = this.supastate.addColumn({
+        const primaryKeyColumn = this.supastate.addColumn({
             name: params.foreignKeyColumnName,
             type: params.ownerTable.primaryKeyColumn.type,
             table: table,
             external: params.external,
         });
         const primaryKeyConstraint = this.supastate.addPrimaryKeyConstraint({
-            name: `${table.name}_${foreignKeyColumn.name}_pkey`,
+            name: `${table.name}_${primaryKeyColumn.name}_pkey`,
             table: table,
-            columns: [foreignKeyColumn],
+            columns: [primaryKeyColumn],
             external: params.external,
         });
         const foreignKeyConstraint = this.supastate.addForeignKeyConstraint({
-            name: `${table.name}_${foreignKeyColumn.name}_fkey`,
+            name: `${table.name}_${primaryKeyColumn.name}_fkey`,
             table: table,
-            columns: [foreignKeyColumn],
+            columns: [primaryKeyColumn],
             otherTable: params.ownerTable.table,
             otherColumns: [params.ownerTable.primaryKeyColumn],
             external: params.external,
@@ -46,7 +46,7 @@ export class InformationTableFactory {
         });
         return {
             table,
-            foreignKeyColumn,
+            primaryKeyColumn,
             primaryKeyConstraint,
             foreignKeyConstraint,
             rlsSetting,
