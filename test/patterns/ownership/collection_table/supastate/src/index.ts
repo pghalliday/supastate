@@ -1,5 +1,5 @@
-import {mkdir, writeFile} from "node:fs/promises";
 import {Supastate, RootTableFactory, CollectionTableFactory} from "@pghalliday/supastate";
+import {writeSql} from "supastate-test-utils";
 
 const supastate = new Supastate();
 
@@ -26,5 +26,6 @@ const s1t1ColTable = collectionTableFactory.addCollectionTable({
     ownerTable: usersTable,
 });
 
-await mkdir('../sql', {recursive: true});
-await writeFile('../sql/supastate.sql', supastate.migrate({}));
+await writeSql({
+    'sql/supastate.sql': supastate.migrate({}),
+});

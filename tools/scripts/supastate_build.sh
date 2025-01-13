@@ -5,15 +5,12 @@ set -e
 INPUT_DIR=$1
 DEPS_FILE=$2
 
-SUPASTATE_SQL_SCRIPT=$INPUT_DIR/sql/supastate.sql
-
 rm -rf "${INPUT_DIR:?}/"lib
-if SUPASTATE_INPUT_FILES=$(npx tsc --project "$INPUT_DIR"/tsconfig.json --listFiles); then
-  echo "$SUPASTATE_SQL_SCRIPT: $(echo "$SUPASTATE_INPUT_FILES" | sed 's/$/ \\/')" > "$DEPS_FILE"
-  cd "$INPUT_DIR"/lib
-  node index.js
+INPUT_FILES=$(npx tsc --project "$INPUT_DIR"/tsconfig.json --listFiles)
+EXIT_CODE=$?
+echo "$INPUT_FILES" | grep "^[^/]" || true
+if [ "$EXIT_CODE" -eq "0" ]; then
+  node "$INPUT_DIR"/lib/index.js "$INPUT_DIR" "$DEPS_FILE" "$(echo "$INPUT_FILES" | grep "^/" || true)"
 else
-  EXIT_CODE=$?
-  echo "$SUPASTATE_INPUT_FILES" | grep ": error"
   exit $EXIT_CODE
 fi

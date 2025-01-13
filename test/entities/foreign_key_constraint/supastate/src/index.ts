@@ -1,5 +1,5 @@
-import {mkdir, writeFile} from "node:fs/promises";
 import {Supastate} from "@pghalliday/supastate";
+import {writeSql} from "supastate-test-utils";
 
 const supastate = new Supastate();
 const authSchema = supastate.addSchema({name: 'auth', external: true});
@@ -19,5 +19,6 @@ const s1T1PrimaryKey = supastate.addPrimaryKeyConstraint({table: s1T1Table, name
 const s1T1UserIdColumn = supastate.addColumn({table: s1T1Table, name: 'user_id', type: 'uuid'});
 const s1T1UserForeignKey = supastate.addForeignKeyConstraint({table: s1T1Table, name: 'fk', columns: [s1T1UserIdColumn], otherTable: usersTable, otherColumns: [usersIdColumn]});
 
-await mkdir('../sql', {recursive: true});
-await writeFile('../sql/supastate.sql', supastate.migrate({}));
+await writeSql({
+    'sql/supastate.sql': supastate.migrate({}),
+});

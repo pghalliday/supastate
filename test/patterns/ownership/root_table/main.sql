@@ -1,7 +1,7 @@
 begin;
 
 #include "supastate/sql/supastate.sql"
-#include "../../../util/rls.sql"
+#include "../../../util/sql/rls.sql"
 
 select plan(8);
 

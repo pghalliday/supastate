@@ -1,5 +1,5 @@
-import {mkdir, writeFile} from "node:fs/promises";
 import {Supastate, policyToBuiltIn, policyToRole, expression} from "@pghalliday/supastate";
+import {writeSql} from "supastate-test-utils";
 
 const supastate = new Supastate();
 
@@ -34,5 +34,6 @@ const ownerPolicy = supastate.addPolicy({
     }),
 });
 
-await mkdir('../sql', {recursive: true});
-await writeFile('../sql/supastate.sql', supastate.migrate({}));
+await writeSql({
+    'sql/supastate.sql': supastate.migrate({}),
+});
