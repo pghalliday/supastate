@@ -21,22 +21,22 @@ export interface Policy {
     id: string;
     name: string;
     tableId: string;
-    as: PolicyAs;
-    for: PolicyFor;
+    as?: PolicyAs;
+    for?: PolicyFor;
     to: PolicyTo[];
-    using: Expression;
-    withCheck: Expression;
+    using?: Expression;
+    withCheck?: Expression;
     external: boolean;
 }
 
 export interface PolicyParams {
     name: string;
     table: Table;
-    as: PolicyAs;
-    for: PolicyFor;
-    to: PolicyTo[];
-    using: Expression;
-    withCheck: Expression;
+    as?: PolicyAs;
+    for?: PolicyFor;
+    to?: PolicyTo[];
+    using?: Expression;
+    withCheck?: Expression;
     external?: boolean;
 }
 
@@ -48,7 +48,7 @@ export function initPolicy(params: PolicyParams): Policy {
         tableId: params.table.id,
         as: params.as,
         for: params.for,
-        to: params.to,
+        to: params.to || [],
         using: params.using,
         withCheck: params.withCheck,
         external: params.external || false,

@@ -13,8 +13,8 @@ export class PolicyController implements EntityController {
     private readonly policy: Policy;
     private readonly tableController: TableController;
     private readonly policyToControllers: PolicyToController[];
-    private readonly usingExpressionController: ExpressionController;
-    private readonly withCheckExpressionController: ExpressionController;
+    private readonly usingExpressionController?: ExpressionController;
+    private readonly withCheckExpressionController?: ExpressionController;
 
     constructor(
         readonly entity: Entity,
@@ -28,8 +28,12 @@ export class PolicyController implements EntityController {
             this.policy.to,
             policyTo => createPolicyToController(policyTo, entities)
         );
-        this.usingExpressionController = new ExpressionController(this.policy.using, entities);
-        this.withCheckExpressionController = new ExpressionController(this.policy.withCheck, entities);
+        if (this.policy.using !== undefined) {
+            this.usingExpressionController = new ExpressionController(this.policy.using, entities);
+        }
+        if (this.policy.withCheck !== undefined) {
+            this.withCheckExpressionController = new ExpressionController(this.policy.withCheck, entities);
+        }
     }
 
     getId(): string {
@@ -57,14 +61,20 @@ export class PolicyController implements EntityController {
     }
 
     create(): string {
+        const asClause = (this.policy.as === undefined) ? '' : `AS ${this.policy.as} `;
+        const forClause = (this.policy.for === undefined) ? '' : `FOR ${this.policy.for} `;
+        const toClause = (this.policyToControllers.length === 0) ? '' : `TO ${join(map(this.policyToControllers, policyToController => policyToController.getText()), ', ')} `;
+        const usingClause = (this.usingExpressionController === undefined) ? '' : `USING (${this.usingExpressionController.compile()}) `;
+        const withCheckClause = (this.withCheckExpressionController === undefined) ? '' : `WITH CHECK (${this.withCheckExpressionController.compile()}) `;
         return (
             `CREATE POLICY ${this.getSafeName()} ` +
             `ON ${this.tableController.getFullSafeName()} ` +
-            `AS ${this.policy.as} ` +
-            `FOR ${this.policy.for} ` +
-            `TO ${join(map(this.policyToControllers, policyToController => policyToController.getText()), ', ')} ` +
-            `USING (${this.usingExpressionController.compile()}) ` +
-            `WITH CHECK (${this.withCheckExpressionController.compile()});\n`
+            asClause +
+            forClause +
+            toClause +
+            usingClause +
+            withCheckClause +
+            `;\n`
         );
     }
 
@@ -82,8 +92,8 @@ export class PolicyController implements EntityController {
                 this.policyToControllers,
                 policyToController => policyToController.getDependencies()
             ),
-            ...this.usingExpressionController.getDependencies(),
-            ...this.withCheckExpressionController.getDependencies(),
+            ...((this.usingExpressionController === undefined) ? [] : this.usingExpressionController.getDependencies()),
+            ...((this.withCheckExpressionController === undefined) ? [] : this.withCheckExpressionController.getDependencies()),
         ];
     }
 
@@ -94,8 +104,28 @@ export class PolicyController implements EntityController {
                 (this.policy.as === toMatch.policy.as) &&
                 (this.policy.for === toMatch.policy.for) &&
                 this.tableController.match(toMatch.tableController) &&
-                this.usingExpressionController.match(toMatch.usingExpressionController) &&
-                this.withCheckExpressionController.match(toMatch.withCheckExpressionController) &&
+                (
+                    (
+                        this.usingExpressionController === undefined &&
+                        toMatch.usingExpressionController === undefined
+                    ) ||
+                    (
+                        this.usingExpressionController !== undefined &&
+                        toMatch.usingExpressionController !== undefined &&
+                        this.usingExpressionController.match(toMatch.usingExpressionController)
+                    )
+                ) &&
+                (
+                    (
+                        this.withCheckExpressionController === undefined &&
+                        toMatch.withCheckExpressionController === undefined
+                    ) ||
+                    (
+                        this.withCheckExpressionController !== undefined &&
+                        toMatch.withCheckExpressionController !== undefined &&
+                        this.withCheckExpressionController.match(toMatch.withCheckExpressionController)
+                    )
+                ) &&
                 xorWith(
                     this.policyToControllers,
                     toMatch.policyToControllers,
