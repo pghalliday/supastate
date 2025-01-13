@@ -14,4 +14,5 @@ rm -rf "${INPUT_DIR:?}/"lib
 $TSC_COMMAND
 SUPASTATE_INPUT_FILES=$($TSC_COMMAND --listFiles --noEmit)
 echo "$SUPASTATE_SQL_SCRIPT: $(echo "$SUPASTATE_INPUT_FILES" | sed 's/$/ \\/')" > "$DEPS_FILE"
-npm run createState -- -c "$CURRENT_DIR"/"$INPUT_DIR"/supastate.json
+cd "$INPUT_DIR"/lib
+node index.js

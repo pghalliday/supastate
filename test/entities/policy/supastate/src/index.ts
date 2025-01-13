@@ -1,34 +1,38 @@
+import {mkdir, writeFile} from "node:fs/promises";
 import {Supastate, policyToBuiltIn, policyToRole, expression} from "@pghalliday/supastate";
 
-export function configure(supastate: Supastate): void {
-    const authenticatedRole = supastate.addRole({name: 'authenticated', external: true});
+const supastate = new Supastate();
 
-    const authSchema = supastate.addSchema({name: 'auth', external: true});
-    const usersTable = supastate.addTable({name: 'users', schema: authSchema, external: true});
-    const usersIdColumn = supastate.addColumn({table: usersTable, name: 'id', type: 'uuid', external: true});
+const authenticatedRole = supastate.addRole({name: 'authenticated', external: true});
 
-    const publicSchema = supastate.addSchema({name: 'public', external: true});
-    const profilesTable = supastate.addTable({name: 'profiles', schema: publicSchema});
-    const profilesUserIdColumn = supastate.addColumn({table: profilesTable, name: 'userId', type: 'uuid'});
-    const profilesForeignKey = supastate.addForeignKeyConstraint({
-        name: 'fk',
-        table: profilesTable,
-        otherTable: usersTable,
-        columns: [profilesUserIdColumn],
-        otherColumns: [usersIdColumn],
-    });
+const authSchema = supastate.addSchema({name: 'auth', external: true});
+const usersTable = supastate.addTable({name: 'users', schema: authSchema, external: true});
+const usersIdColumn = supastate.addColumn({table: usersTable, name: 'id', type: 'uuid', external: true});
 
-    const ownerPolicy = supastate.addPolicy({
-        name: 'owner can do anything',
-        table: profilesTable,
-        as: 'PERMISSIVE',
-        for: 'ALL',
-        to: [policyToBuiltIn('CURRENT_ROLE'), policyToRole(authenticatedRole)],
-        using: expression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
-            profilesUserIdColumn
-        }),
-        withCheck: expression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
-            profilesUserIdColumn
-        }),
-    });
-}
+const publicSchema = supastate.addSchema({name: 'public', external: true});
+const profilesTable = supastate.addTable({name: 'profiles', schema: publicSchema});
+const profilesUserIdColumn = supastate.addColumn({table: profilesTable, name: 'userId', type: 'uuid'});
+const profilesForeignKey = supastate.addForeignKeyConstraint({
+    name: 'fk',
+    table: profilesTable,
+    otherTable: usersTable,
+    columns: [profilesUserIdColumn],
+    otherColumns: [usersIdColumn],
+});
+
+const ownerPolicy = supastate.addPolicy({
+    name: 'owner can do anything',
+    table: profilesTable,
+    as: 'PERMISSIVE',
+    for: 'ALL',
+    to: [policyToBuiltIn('CURRENT_ROLE'), policyToRole(authenticatedRole)],
+    using: expression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
+        profilesUserIdColumn
+    }),
+    withCheck: expression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
+        profilesUserIdColumn
+    }),
+});
+
+await mkdir('../sql', {recursive: true});
+await writeFile('../sql/supastate.sql', supastate.migrate({}));

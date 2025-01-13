@@ -35,7 +35,6 @@ clean_supastate: clean_test
 	@-rm -rf $(SUPASTATE_SQL_DIRS)
 
 %/supastate/sql/supastate.sql: $(SUPASTATE_TS_DEPENDENCY_DIR)/%.d | $(SUPASTATE_TS_DEPENDENCY_DIRS)
-	npm run buildIncremental
 	$(TOOLS_DIR)/scripts/supastate_build.sh $*/supastate $<
 
 $(SUPASTATE_TS_DEPENDENCY_DIRS) $(SUPASTATE_DEPENDENCY_DIR):

@@ -20,7 +20,6 @@
     "build": "tsc --project tsconfig.json",
     "buildIncremental": "tsc --incremental --project tsconfig.json",
     "prepublishOnly": "npm run build",
-    "createState": "node bin/index.js createState",
     "help": "npm run build && node bin/index.js --help",
     "version": "npm run build && node bin/index.js --version"
   },

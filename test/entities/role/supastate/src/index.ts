@@ -1,6 +1,9 @@
+import {mkdir, writeFile} from "node:fs/promises";
 import {Supastate} from "@pghalliday/supastate";
 
-export function configure(supastate: Supastate): void {
-    const authenticatedRole = supastate.addRole({name: 'authenticated', external: true});
-    const s1Schema = supastate.addRole({name: 'r1'});
-}
+const supastate = new Supastate();
+const authenticatedRole = supastate.addRole({name: 'authenticated', external: true});
+const s1Schema = supastate.addRole({name: 'r1'});
+
+await mkdir('../sql', {recursive: true});
+await writeFile('../sql/supastate.sql', supastate.migrate({}));

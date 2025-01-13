@@ -5,10 +5,7 @@ import {deserialize, serialize, type Serialized} from "./serialization.js";
 import {newerThan, timestampedFileName, toISO} from "./timestamp.js";
 import {createConfig} from "./types/Config.js";
 import type {Options} from "./types/Options.js";
-import type {Entities} from "../entities/models/Entities.js";
 import {Supastate} from "../Supastate.js";
-import {migrate} from "../entities/migration/migrate.js";
-import {initEntityControllers} from "../entities/controllers/EntityControllers.js";
 const __dirname = import.meta.dirname;
 
 const packageJson = await readFile(resolve(__dirname, '../../package.json'), 'utf8');
@@ -50,9 +47,8 @@ program
     )
     .action(async (options: Options) => {
         console.log(`Serializing ${options.config.supastateModule} to ${options.config.targetJsonFile}`);
-        const targetEntities: Entities = {};
-        (await import(options.config.supastateModule)).configure(new Supastate(targetEntities));
-        const targetSerialized = serialize(targetEntities);
+        const supastate: Supastate = (await import(options.config.supastateModule)).configure();
+        const targetSerialized = serialize(supastate.entities);
         const targetTimestamp = targetSerialized.timestamp;
         const targetJson = JSON.stringify(targetSerialized, null, 2);
         await mkdir(dirname(options.config.targetJsonFile), {recursive: true});
@@ -79,33 +75,7 @@ program
         const resolvedMigrationFile = resolve(options.config.migrationsDir, migrationFile);
         // generate the new migration file
         console.log(`Generating migration file ${resolvedMigrationFile}`);
-        await writeFile(resolvedMigrationFile, migrate(
-            initEntityControllers(currentEntities),
-            initEntityControllers(targetEntities)
-        ));
-    });
-
-program
-    .command('createState')
-    .description(
-        'Create the SQL script for the state described by the supastate module. ' +
-        'Note that this does not generate the JSON state files or attempt any migration. ' +
-        'This is intended for use in testing library patterns'
-    )
-    .action(async (options: Options) => {
-        console.log(`Reading ${options.config.supastateModule}`);
-        const targetEntities: Entities = {};
-        (await import(options.config.supastateModule)).configure(new Supastate(targetEntities));
-        // construct the file name for the new SQL script
-        const sqlFile = `${options.config.name}.sql`;
-        const resolvedSQLFile = resolve(options.config.migrationsDir, sqlFile);
-        // generate the new SQL script
-        console.log(`Generating SQL script ${resolvedSQLFile}`);
-        await mkdir(options.config.migrationsDir, {recursive: true});
-        await writeFile(resolvedSQLFile, migrate(
-            initEntityControllers({}),
-            initEntityControllers(targetEntities)
-        ));
+        await writeFile(resolvedMigrationFile, supastate.migrate(currentEntities));
     });
 
 program

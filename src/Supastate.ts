@@ -20,9 +20,15 @@ import {
 } from "./entities/models/NotNullConstraint.js";
 import {initRole, Role, RoleParams} from "./entities/models/Role.js";
 import {initPolicy, Policy, PolicyParams} from "./entities/models/Policy.js";
+import {migrate} from "./entities/migration/migrate.js";
+import {initEntityControllers} from "./entities/controllers/EntityControllers.js";
 
 export class Supastate {
-    constructor(private entities: Entities) {}
+    entities: Entities;
+
+    constructor() {
+        this.entities = {};
+    }
 
     addRole(params: RoleParams): Role {
         const role = initRole(params);
@@ -76,5 +82,12 @@ export class Supastate {
         const policy = initPolicy(params);
         this.entities[policy.id] = policy;
         return policy;
+    }
+
+    migrate(currentEntities: Entities): string {
+        return migrate(
+            initEntityControllers(currentEntities),
+            initEntityControllers(this.entities)
+        )
     }
 }

@@ -1,7 +1,0 @@
-{
-  "name": "supastate",
-  "supastateModule": "lib/index.js",
-  "targetJsonFile": "json/target.json",
-  "currentJsonFile": "json/current.json",
-  "migrationsDir": "sql"
-}

@@ -1,35 +1,39 @@
+import {mkdir, writeFile} from "node:fs/promises";
 import {Supastate, RootTableFactory, MembershipTableFactory} from "@pghalliday/supastate";
 
-export function configure(supastate: Supastate): void {
-    const authSchema = supastate.addSchema({name: 'auth', external: true});
-    const s1Schema = supastate.addSchema({name: 's1'});
+const supastate = new Supastate();
 
-    const rootTableFactory = new RootTableFactory(supastate);
-    const membershipTableFactory = new MembershipTableFactory(supastate);
+const authSchema = supastate.addSchema({name: 'auth', external: true});
+const s1Schema = supastate.addSchema({name: 's1'});
 
-    const usersTable = rootTableFactory.addRootTable({
-        name: 'users',
-        schema: authSchema,
-        primaryKeyColumnName: 'id',
-        primaryKeyColumnType: 'uuid',
-        external: true,
-    });
+const rootTableFactory = new RootTableFactory(supastate);
+const membershipTableFactory = new MembershipTableFactory(supastate);
 
-    const s1T1Root = rootTableFactory.addRootTable({
-        name: 't1_root',
-        schema: s1Schema,
-        primaryKeyColumnName: 'id',
-        primaryKeyColumnType: 'uuid',
-    });
+const usersTable = rootTableFactory.addRootTable({
+    name: 'users',
+    schema: authSchema,
+    primaryKeyColumnName: 'id',
+    primaryKeyColumnType: 'uuid',
+    external: true,
+});
 
-    const s1t1ColTable = membershipTableFactory.addMembershipTable({
-        name: 't2_mem',
-        schema: s1Schema,
-        primaryKeyColumnName: 'id',
-        primaryKeyColumnType: 'uuid',
-        memberColumnName: 'member_id',
-        memberTable: usersTable,
-        groupColumnName: 'group_id',
-        groupTable: s1T1Root,
-    });
-}
+const s1T1Root = rootTableFactory.addRootTable({
+    name: 't1_root',
+    schema: s1Schema,
+    primaryKeyColumnName: 'id',
+    primaryKeyColumnType: 'uuid',
+});
+
+const s1t1ColTable = membershipTableFactory.addMembershipTable({
+    name: 't2_mem',
+    schema: s1Schema,
+    primaryKeyColumnName: 'id',
+    primaryKeyColumnType: 'uuid',
+    memberColumnName: 'member_id',
+    memberTable: usersTable,
+    groupColumnName: 'group_id',
+    groupTable: s1T1Root,
+});
+
+await mkdir('../sql', {recursive: true});
+await writeFile('../sql/supastate.sql', supastate.migrate({}));
