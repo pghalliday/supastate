@@ -3,5 +3,8 @@
 .temp
 .env
 
+# Generated migrations
+/migrations/
+
 # Generated tests
 /tests/
