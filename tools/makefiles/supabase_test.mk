@@ -5,7 +5,7 @@
 
 include $(TOOLS_DIR)/makefiles/supabase.mk
 
-SUPABASE_TEST_DIR := .test
+SUPABASE_TEST_DIR := $(SUPABASE_BUILD_DIR)/test
 SUPABASE_TEST_REPORT := $(SUPABASE_TEST_DIR)/report.txt
 
 test: $(SUPABASE_TEST_REPORT)

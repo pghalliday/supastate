@@ -6,7 +6,8 @@ ifndef SUPABASE_OUTPUT_DIR
 $(error SUPABASE_OUTPUT_DIR is not set)
 endif
 
-SUPABASE_DEPENDENCY_DIR := .deps
+SUPABASE_BUILD_DIR := .build
+SUPABASE_DEPENDENCY_DIR := $(SUPABASE_BUILD_DIR)/dependencies
 
 # Search for include directories
 SUPABASE_INCLUDE_DIRS := $(shell find $(SUPABASE_INCLUDE_SEARCH_PATHS) -type d -name 'include')
@@ -68,7 +69,7 @@ SUPABASE_DEPENDENCY_DIRS := \
 build: $(SUPABASE_OUTPUT_FILES)
 
 clean:
-	@-rm -rf $(SUPABASE_DEPENDENCY_DIR)
+	@-rm -rf $(SUPABASE_BUILD_DIR)
 	@-rm -rf $(SUPABASE_OUTPUT_DIR)
 
 $(SUPABASE_OUTPUT_DIR)/%.sql: $(SUPABASE_DEPENDENCY_DIR)/%.d %/$(SUPABASE_ENTRY_FILE) \
