@@ -12,7 +12,7 @@ const usersIdColumn = create.addColumn({table: usersTable, name: 'id', type: 'uu
 const publicSchema = create.addSchema({name: 'public', external: true});
 const profilesTable = create.addTable({name: 'profiles', schema: publicSchema});
 const profilesRLSEnabled = create.addRLSEnabled({table: profilesTable});
-const profilesUserIdColumn = create.addColumn({table: profilesTable, name: 'userId', type: 'uuid'});
+const profilesUserIdColumn = create.addColumn({table: profilesTable, name: 'user_id', type: 'uuid'});
 const profilesForeignKey = create.addForeignKeyConstraint({
     name: 'fk',
     table: profilesTable,

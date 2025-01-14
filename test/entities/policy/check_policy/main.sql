@@ -1,21 +1,51 @@
 begin;
 
-create extension "basejump-supabase_test_helpers";
-#include "../../../util/sql/rls.sql"
+create
+    extension "basejump-supabase_test_helpers";
 
-select plan(1);
+select plan(3);
 
 #include "../supastate/sql/create.sql"
 
 select tests.create_supabase_user('user_1');
 select tests.create_supabase_user('user_2');
-select tests.create_supabase_user('user_3');
-select tests.create_supabase_user('user_4');
+select tests.clear_authentication();
 
-select todo_start();
-select fail('Test the actual policy');
-select todo_end();
+select throws_ok(
+    $$
+        insert into profiles
+            (user_id)
+        values
+            (tests.get_supabase_uid('user_1'))
+    $$,
+    'new row violates row-level security policy for table "profiles"',
+    'Unauthenticated users should not be able to insert into profiles'
+);
 
-select * from finish();
+select tests.authenticate_as('user_1');
+
+select throws_ok(
+    $$
+        insert into profiles
+            (user_id)
+        values
+            (tests.get_supabase_uid('user_2'))
+    $$,
+    'new row violates row-level security policy for table "profiles"',
+    'Users should not be able to insert into profiles for other users'
+);
+
+select lives_ok(
+    $$
+        insert into profiles
+            (user_id)
+        values
+            (tests.get_supabase_uid('user_1'))
+    $$,
+    'Authenticated users should be able to insert into profiles for themselves'
+);
+
+select *
+from finish();
 
 rollback;
