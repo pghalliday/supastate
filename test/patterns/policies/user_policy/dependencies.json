@@ -1,3 +1,4 @@
 [
-  "supastate/sql/supastate.sql"
+  "supastate/sql/create.sql",
+  "supastate/sql/drop.sql"
 ]

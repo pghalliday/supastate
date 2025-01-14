@@ -1,18 +1,18 @@
 import {Supastate, policyToBuiltIn, policyToRole, expression} from "@pghalliday/supastate";
 import {writeSql} from "supastate-test-utils";
 
-const supastate = new Supastate();
+const create = new Supastate();
 
-const authenticatedRole = supastate.addRole({name: 'authenticated', external: true});
+const authenticatedRole = create.addRole({name: 'authenticated', external: true});
 
-const authSchema = supastate.addSchema({name: 'auth', external: true});
-const usersTable = supastate.addTable({name: 'users', schema: authSchema, external: true});
-const usersIdColumn = supastate.addColumn({table: usersTable, name: 'id', type: 'uuid', external: true});
+const authSchema = create.addSchema({name: 'auth', external: true});
+const usersTable = create.addTable({name: 'users', schema: authSchema, external: true});
+const usersIdColumn = create.addColumn({table: usersTable, name: 'id', type: 'uuid', external: true});
 
-const publicSchema = supastate.addSchema({name: 'public', external: true});
-const profilesTable = supastate.addTable({name: 'profiles', schema: publicSchema});
-const profilesUserIdColumn = supastate.addColumn({table: profilesTable, name: 'userId', type: 'uuid'});
-const profilesForeignKey = supastate.addForeignKeyConstraint({
+const publicSchema = create.addSchema({name: 'public', external: true});
+const profilesTable = create.addTable({name: 'profiles', schema: publicSchema});
+const profilesUserIdColumn = create.addColumn({table: profilesTable, name: 'userId', type: 'uuid'});
+const profilesForeignKey = create.addForeignKeyConstraint({
     name: 'fk',
     table: profilesTable,
     otherTable: usersTable,
@@ -20,7 +20,7 @@ const profilesForeignKey = supastate.addForeignKeyConstraint({
     otherColumns: [usersIdColumn],
 });
 
-const ownerPolicy = supastate.addPolicy({
+const ownerPolicy = create.addPolicy({
     name: 'owner can do anything',
     table: profilesTable,
     as: 'PERMISSIVE',
@@ -34,6 +34,9 @@ const ownerPolicy = supastate.addPolicy({
     }),
 });
 
+const drop = new Supastate();
+
 await writeSql([
-    supastate.migrate({}),
+    create.migrate({}),
+    drop.migrate(create.entities),
 ]);

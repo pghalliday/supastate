@@ -1,13 +1,13 @@
 import {Supastate, RootTableFactory, MembershipTableFactory} from "@pghalliday/supastate";
 import {writeSql} from "supastate-test-utils";
 
-const supastate = new Supastate();
+const create = new Supastate();
 
-const authSchema = supastate.addSchema({name: 'auth', external: true});
-const s1Schema = supastate.addSchema({name: 's1'});
+const authSchema = create.addSchema({name: 'auth', external: true});
+const s1Schema = create.addSchema({name: 's1'});
 
-const rootTableFactory = new RootTableFactory(supastate);
-const membershipTableFactory = new MembershipTableFactory(supastate);
+const rootTableFactory = new RootTableFactory(create);
+const membershipTableFactory = new MembershipTableFactory(create);
 
 const usersTable = rootTableFactory.addRootTable({
     name: 'users',
@@ -35,6 +35,9 @@ const s1t1ColTable = membershipTableFactory.addMembershipTable({
     groupTable: s1T1Root,
 });
 
+const drop = new Supastate();
+
 await writeSql([
-    supastate.migrate({}),
+    create.migrate({}),
+    drop.migrate(create.entities),
 ]);

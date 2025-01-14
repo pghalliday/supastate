@@ -75,7 +75,7 @@ $(SUPABASE_OUTPUT_DIR)/%.sql: $(SUPABASE_DEPENDENCY_DIR)/%.d %/$(SUPABASE_ENTRY_
 								| $(SUPABASE_DEPENDENCY_DIRS) $(SUPABASE_OUTPUT_DIRS)
 	@echo "compiling $@"
 	@cpp $(CPP_OPTIONS) -MF$(SUPABASE_DEPENDENCY_DIR)/$*.Td "$*/$(SUPABASE_ENTRY_FILE)" "$@"
-	# defense against odd file times with newer GNU Make resulting in .d files newer than the .sql files
+# defense against odd file times with newer GNU Make resulting in .d files newer than the .sql files
 	@mv -f $(SUPABASE_DEPENDENCY_DIR)/$*.Td $(SUPABASE_DEPENDENCY_DIR)/$*.d && touch $@
 
 $(SUPABASE_DEPENDENCY_DIRS) $(SUPABASE_OUTPUT_DIRS):

@@ -1,11 +1,16 @@
 begin;
 
-#include "supastate/sql/supastate.sql"
+select plan(4);
 
-select plan(2);
+#include "supastate/sql/create.sql"
 
 select has_role('authenticated');
 select has_role('r1');
+
+#include "supastate/sql/drop.sql"
+
+select has_role('authenticated');
+select hasnt_role('r1');
 
 select * from finish();
 
