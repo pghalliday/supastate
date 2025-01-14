@@ -5,7 +5,7 @@ select plan(8);
 #include "supastate/sql/create.sql"
 
 select has_table('s1', 't2_mem'::name);
-select has_rls('s1', 't2_mem');
+select tu_has_rls('s1', 't2_mem');
 select col_type_is('s1', 't2_mem', 'id'::name, 'uuid');
 select col_is_pk('s1', 't2_mem', 'id', 'Column s1.t2_mem(id) should be a primary key');
 select fk_ok('s1', 't2_mem', 'member_id', 'auth', 'users', 'id');

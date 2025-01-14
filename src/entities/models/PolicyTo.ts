@@ -40,14 +40,14 @@ export type PolicyToBuiltIn =
     typeof POLICY_TO_CURRENT_USER_TYPE |
     typeof POLICY_TO_SESSION_USER_TYPE;
 
-export function policyToRole(role: Role): PolicyTo {
+export function createPolicyToRole(role: Role): PolicyTo {
     return {
         type: POLICY_TO_ROLE_TYPE,
         roleId: role.id,
     };
 }
 
-export function policyToBuiltIn(builtIn: PolicyToBuiltIn): PolicyTo {
+export function createPolicyToBuiltIn(builtIn: PolicyToBuiltIn): PolicyTo {
     return {
         type: builtIn,
     };

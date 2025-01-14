@@ -1,4 +1,4 @@
-import {Supastate, policyToBuiltIn, policyToRole, expression} from "@pghalliday/supastate";
+import {Supastate, createPolicyToBuiltIn, createPolicyToRole, createExpression} from "@pghalliday/supastate";
 import {writeSql} from "supastate-test-utils";
 
 const create = new Supastate();
@@ -26,11 +26,11 @@ const ownerPolicy = create.addPolicy({
     table: profilesTable,
     as: 'PERMISSIVE',
     for: 'ALL',
-    to: [policyToBuiltIn('CURRENT_ROLE'), policyToRole(authenticatedRole)],
-    using: expression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
+    to: [createPolicyToBuiltIn('CURRENT_ROLE'), createPolicyToRole(authenticatedRole)],
+    using: createExpression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
         profilesUserIdColumn
     }),
-    withCheck: expression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
+    withCheck: createExpression('(select auth.uid()) = {{{profilesUserIdColumn}}}', {
         profilesUserIdColumn
     }),
 });

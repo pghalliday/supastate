@@ -7,7 +7,7 @@ export interface Expression {
     entityIds: Record<string, string>;
 }
 
-export function expression(template: string, expressionReferences: Record<string, ExpressionReference>): Expression {
+export function createExpression(template: string, expressionReferences: Record<string, ExpressionReference>): Expression {
     return {
         template,
         entityIds: mapValues(expressionReferences, entity => entity.id),

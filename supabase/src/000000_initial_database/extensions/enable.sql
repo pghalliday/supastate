@@ -1,3 +1,5 @@
+#pragma once
+
 create
     extension if not exists pgtap with schema extensions cascade;
 create
