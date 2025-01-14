@@ -1,7 +1,7 @@
 begin;
 
 create
-    extension "basejump-supabase_test_helpers";
+    extension if not exists "basejump-supabase_test_helpers";
 
 select plan(3);
 
