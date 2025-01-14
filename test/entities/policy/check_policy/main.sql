@@ -1,8 +1,5 @@
 begin;
 
-create
-    extension if not exists "basejump-supabase_test_helpers";
-
 select plan(3);
 
 #include "../supastate/sql/create.sql"

@@ -1,1 +1,3 @@
-#include "extensions/_index.sql"
+#include "extensions.sql"
+#include "test_utils.sql"
+

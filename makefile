@@ -39,12 +39,12 @@ clean_tests: npm_clean
 
 npm_build:
 	npm run buildIncremental
-	npm --prefix test/util/ts run buildIncremental
+	npm --prefix tools/supastate-test-utils run buildIncremental
 
 npm_clean:
 	npm run clean
-	npm --prefix test/util/ts run clean
+	npm --prefix tools/supastate-test-utils run clean
 
 npm_install:
 	npm install
-	npm --prefix test/util/ts install
+	npm --prefix tools/supastate-test-utils install

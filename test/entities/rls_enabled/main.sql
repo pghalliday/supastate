@@ -1,7 +1,5 @@
 begin;
 
-#include "../../util/sql/rls.sql"
-
 select plan(7);
 
 #include "supastate/sql/create.sql"

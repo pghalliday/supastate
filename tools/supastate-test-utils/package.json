@@ -8,8 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf lib",
     "prebuild": "npm run clean",
-    "build": "tsc --project tsconfig.json",
-    "buildIncremental": "tsc --incremental --project tsconfig.json"
+    "build": "node_modules/.bin/tsc --project tsconfig.json",
+    "buildIncremental": "node_modules/.bin/tsc --incremental --project tsconfig.json"
   },
   "author": "",
   "license": "ISC",
