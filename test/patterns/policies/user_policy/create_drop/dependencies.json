@@ -1,0 +1,4 @@
+[
+  "../supastate/sql/create.sql",
+  "../supastate/sql/drop.sql"
+]
