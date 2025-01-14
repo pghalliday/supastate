@@ -15,6 +15,6 @@ const s1T1Table = supastate.addTable({name: 't1', schema: s1Schema});
 const s1T1IdColumn = supastate.addColumn({table: s1T1Table, name: 'id', type: 'uuid'});
 const s1T1PrimaryKey = supastate.addPrimaryKeyConstraint({table: s1T1Table, name: 'pk', columns: [s1T1IdColumn]});
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

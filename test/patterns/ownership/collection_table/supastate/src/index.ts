@@ -26,6 +26,6 @@ const s1t1ColTable = collectionTableFactory.addCollectionTable({
     ownerTable: usersTable,
 });
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

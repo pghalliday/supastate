@@ -5,6 +5,6 @@ const supastate = new Supastate();
 const authenticatedRole = supastate.addRole({name: 'authenticated', external: true});
 const s1Schema = supastate.addRole({name: 'r1'});
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

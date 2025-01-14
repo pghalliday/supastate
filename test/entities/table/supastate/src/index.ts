@@ -9,6 +9,6 @@ const publicT1Table = supastate.addTable({name: 't1', schema: publicSchema});
 const s1Schema = supastate.addSchema({name: 's1'});
 const s1T1Table = supastate.addTable({name: 't1', schema: s1Schema});
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

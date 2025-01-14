@@ -12,6 +12,6 @@ const s1Schema = supastate.addSchema({name: 's1'});
 const s1T1Table = supastate.addTable({name: 't1', schema: s1Schema});
 const s1T1IdColumn = supastate.addColumn({table: s1T1Table, name: 'id', type: 'uuid'});
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

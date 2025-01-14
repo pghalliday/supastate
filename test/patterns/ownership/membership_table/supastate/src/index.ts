@@ -35,6 +35,6 @@ const s1t1ColTable = membershipTableFactory.addMembershipTable({
     groupTable: s1T1Root,
 });
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

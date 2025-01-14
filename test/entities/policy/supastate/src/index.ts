@@ -34,6 +34,6 @@ const ownerPolicy = supastate.addPolicy({
     }),
 });
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

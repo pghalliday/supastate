@@ -24,6 +24,6 @@ const s1t1InfoTable = informationTableFactory.addInformationTable({
     ownerTable: usersTable,
 });
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

@@ -19,6 +19,6 @@ const s1T1PrimaryKey = supastate.addPrimaryKeyConstraint({table: s1T1Table, name
 const s1T1UserIdColumn = supastate.addColumn({table: s1T1Table, name: 'user_id', type: 'uuid'});
 const s1T1UserForeignKey = supastate.addForeignKeyConstraint({table: s1T1Table, name: 'fk', columns: [s1T1UserIdColumn], otherTable: usersTable, otherColumns: [usersIdColumn]});
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);

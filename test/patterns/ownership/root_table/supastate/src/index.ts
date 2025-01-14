@@ -23,6 +23,6 @@ const s1t1RootTable = rootTableFactory.addRootTable({
     primaryKeyColumnType: 'uuid',
 });
 
-await writeSql({
-    'sql/supastate.sql': supastate.migrate({}),
-});
+await writeSql([
+    supastate.migrate({}),
+]);
