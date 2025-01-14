@@ -1,14 +1,23 @@
 begin;
 
-select plan(6);
+create extension "basejump-supabase_test_helpers";
+#include "../../../util/sql/rls.sql"
 
-#include "supastate/sql/create.sql"
+select plan(7);
 
+#include "../supastate/sql/create.sql"
+
+select tests.create_supabase_user('user_1');
+select tests.create_supabase_user('user_2');
+select tests.create_supabase_user('user_3');
+select tests.create_supabase_user('user_4');
+
+select has_rls('public', 'profiles'::name);
 select policies_are('public', 'profiles', array['owner can do anything']);
 select policy_roles_are('public', 'profiles', 'owner can do anything', array['postgres', 'authenticated']);
 select policy_cmd_is('public', 'profiles', 'owner can do anything'::name, 'ALL');
 
-#include "supastate/sql/drop.sql"
+#include "../supastate/sql/drop.sql"
 
 select has_column('auth', 'users', 'id', 'Column auth.users(id) should exist');
 select has_schema('public');
