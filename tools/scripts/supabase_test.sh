@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
+set -e
+
+SUPATEST_OUTPUT_DIR=$1
+shift
+
 adjust_path () {
   for test_file; do
-    echo "${test_file/../.}"
+    echo "${test_file/$SUPATEST_OUTPUT_DIR/supabase/tests}"
   done
 }
 

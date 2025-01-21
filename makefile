@@ -13,7 +13,8 @@
 
 SUPABASE_DIR := supabase
 SUPABASE_SRC_DIR := $(SUPABASE_DIR)/src
-TEST_DIR := test
+INTEGRATION_DIR := integration
+TEST_DIR := $(INTEGRATION_DIR)/test
 
 all: clean reset test
 
@@ -35,16 +36,17 @@ clean_migrations:
 	$(MAKE) -C $(SUPABASE_SRC_DIR) clean
 
 clean_tests: npm_clean
-	$(MAKE) -C $(TEST_DIR) clean_supastate
+	$(MAKE) -C $(TEST_DIR) clean
 
 npm_build:
-	npm run buildIncremental
-	npm --prefix tools/supastate-test-utils run buildIncremental
+	npm --prefix supastate run buildIncremental
+	npm --prefix supatest run buildIncremental
 
 npm_clean:
-	npm run clean
-	npm --prefix tools/supastate-test-utils run clean
+	npm --prefix supastate run clean
+	npm --prefix supatest run clean
 
 npm_install:
-	npm install
-	npm --prefix tools/supastate-test-utils install
+	npm --prefix supastate install
+	npm --prefix supatest install
+	npm --prefix $(INTEGRATION_DIR) install
