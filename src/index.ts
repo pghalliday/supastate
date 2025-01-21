@@ -4,5 +4,6 @@ export {InformationTableFactory} from "./patterns/ownership/factories/Informatio
 export {CollectionTableFactory} from "./patterns/ownership/factories/CollectionTableFactory.js";
 export {MembershipTableFactory} from "./patterns/ownership/factories/MembershipTableFactory.js";
 export {UserPolicyFactory} from "./patterns/policies/factories/UserPolicyFactory.js";
+export {OwnerPolicyFactory} from "./patterns/policies/factories/OwnerPolicyFactory.js";
 export {createExpression} from "./entities/models/Expression.js"
 export {createPolicyToRole, createPolicyToBuiltIn} from "./entities/models/PolicyTo.js"
