@@ -1,8 +1,13 @@
 {
   "name": "@pghalliday/supatest",
   "version": "1.0.0",
-  "main": "lib/index.js",
+  "bin": "./bin/index.js",
+  "exports": "./lib/index.js",
   "type": "module",
+  "files": [
+    "lib/**/*",
+    "bin/**/*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf lib",
@@ -22,6 +27,7 @@
   },
   "dependencies": {
     "@pghalliday/supastate": "file:../supastate",
+    "commander": "^13.1.0",
     "lodash": "^4.17.21"
   }
 }
