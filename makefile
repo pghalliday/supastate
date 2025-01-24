@@ -41,12 +41,15 @@ clean_tests: npm_clean
 npm_build:
 	npm --prefix supastate run buildIncremental
 	npm --prefix supatest run buildIncremental
+	npm --prefix supasql run buildIncremental
 
 npm_clean:
 	npm --prefix supastate run clean
 	npm --prefix supatest run clean
+	npm --prefix supasql run clean
 
 npm_install:
 	npm --prefix supastate install
 	npm --prefix supatest install
+	npm --prefix supasql install
 	npm --prefix $(INTEGRATION_DIR) install

@@ -8,6 +8,7 @@
   "exports": {
     ".": "./lib/index.js",
     "./entities": "./lib/entities.js",
+    "./controllers": "./lib/controllers.js",
     "./patterns": "./lib/patterns.js",
     "./util": "./lib/util.js"
   },

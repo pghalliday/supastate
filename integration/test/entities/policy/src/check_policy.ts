@@ -1,45 +1,43 @@
 import {Supatest} from "@pghalliday/supatest";
-import {create} from "./supastates/create.js";
+import {getSupabaseUID, Insert} from "@pghalliday/supasql";
+import {create, profilesTable, profilesUserIdColumn} from "./supastates/create.js";
 
 export const supatest = new Supatest();
 
 supatest.setSupastate(create);
 
-select tests.create_supabase_user('user_1');
-select tests.create_supabase_user('user_2');
-select tests.clear_authentication();
+supatest.createSupabaseUser('user_1');
+supatest.createSupabaseUser('user_2');
+supatest.clearAuthentication();
 
-select throws_ok(
-    $$
-insert into profiles
-(user_id)
-values
-(tests.get_supabase_uid('user_1'))
-$$,
+supatest.throwsOk(
+    new Insert(supatest.knownEntities)
+        .into(profilesTable)
+        .columns([profilesUserIdColumn])
+        .values([getSupabaseUID('user_1')])
+        .build(),
     'new row violates row-level security policy for table "profiles"',
     'Unauthenticated users should not be able to insert into profiles'
 );
 
-select tests.authenticate_as('user_1');
+supatest.authenticateAs('user_1');
 
-select throws_ok(
-    $$
-insert into profiles
-(user_id)
-values
-(tests.get_supabase_uid('user_2'))
-$$,
+supatest.throwsOk(
+    new Insert(supatest.knownEntities)
+        .into(profilesTable)
+        .columns([profilesUserIdColumn])
+        .values([getSupabaseUID('user_2')])
+        .build(),
     'new row violates row-level security policy for table "profiles"',
     'Users should not be able to insert into profiles for other users'
 );
 
-select lives_ok(
-    $$
-insert into profiles
-(user_id)
-values
-(tests.get_supabase_uid('user_1'))
-$$,
+supatest.livesOk(
+    new Insert(supatest.knownEntities)
+        .into(profilesTable)
+        .columns([profilesUserIdColumn])
+        .values([getSupabaseUID('user_1')])
+        .build(),
     'Authenticated users should be able to insert into profiles for themselves'
 );
 

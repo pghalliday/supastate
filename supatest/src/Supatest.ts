@@ -1,5 +1,5 @@
 import {Supastate} from "@pghalliday/supastate";
-import {Entity, Role, Schema, Table, Column, ForeignKeyConstraint} from "@pghalliday/supastate/entities";
+import {Entity, Role, Schema, Table, Column, ForeignKeyConstraint, Policy} from "@pghalliday/supastate/entities";
 import {argv} from "node:process";
 import {mkdir, writeFile} from "node:fs/promises";
 import {dirname} from "node:path";
@@ -9,7 +9,7 @@ const {join, split, map} = _;
 
 export class Supatest {
     private testCount: number = 0;
-    private knownEntities: Record<string, Entity> = {};
+    knownEntities: Record<string, Entity> = {};
     private currentEntities: Record<string, Entity> = {};
     private sql: string = '';
 
@@ -71,7 +71,7 @@ export class Supatest {
         this.testCount++;
     }
 
-    colIsPK(column: Column) {
+    colIsPk(column: Column) {
         const table = this.knownEntities[column.tableId];
         assert(table.entityType === 'table');
         const schema = this.knownEntities[table.schemaId];
@@ -86,7 +86,7 @@ export class Supatest {
         this.testCount++;
     }
 
-    fkOK(foreignKeyConstraint: ForeignKeyConstraint) {
+    fkOk(foreignKeyConstraint: ForeignKeyConstraint) {
         const columnNames = map(foreignKeyConstraint.columnIds, columnId => {
             const column = this.knownEntities[columnId];
             assert(column.entityType === 'column');
@@ -150,6 +150,62 @@ export class Supatest {
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
         this.sql += `select st_has_rls('${schema.name}', '${table.name}'::name);\n`;
+        this.testCount++;
+    }
+
+    policiesAre(table: Table, policyNames: string[]) {
+        const schema = this.knownEntities[table.schemaId];
+        assert(schema.entityType === 'schema');
+        const quotedNames = map(policyNames, name => `'${name}'`)
+        this.sql += `select policies_are('${schema.name}', '${table.name}', array [${quotedNames.join(', ')}]);\n`;
+        this.testCount++;
+    }
+
+    policyRolesAre(policy: Policy, policyRoles: string[]) {
+        const table = this.knownEntities[policy.tableId];
+        assert(table.entityType === 'table');
+        const schema = this.knownEntities[table.schemaId];
+        assert(schema.entityType === 'schema');
+        const quotedRoles = map(policyRoles, role => `'${role}'`)
+        this.sql += `select policy_roles_are('${schema.name}', '${table.name}', '${policy.name}', array [${quotedRoles.join(', ')}]);\n`;
+        this.testCount++;
+    }
+
+    policyCmdIs(policy: Policy, cmd: string) {
+        const table = this.knownEntities[policy.tableId];
+        assert(table.entityType === 'table');
+        const schema = this.knownEntities[table.schemaId];
+        assert(schema.entityType === 'schema');
+        this.sql += `select policy_cmd_is('${schema.name}', '${table.name}', '${policy.name}'::name, '${cmd}');\n`;
+        this.testCount++;
+    }
+
+    createSupabaseUser(userIdentifier: string) {
+        this.sql += `select tests.create_supabase_user('${userIdentifier}');\n`;
+    }
+
+    authenticateAs(userIdentifier: string) {
+        this.sql += `select tests.authenticate_as('${userIdentifier}');\n`;
+    }
+
+    clearAuthentication() {
+        this.sql += `select tests.clear_authentication();\n`;
+    }
+
+    throwsOk(sql: string, error: string, description: string) {
+        this.sql += `select throws_ok(
+    $_sql_$${sql}$_sql_$,
+    $_error_$${error}$_error_$,
+    $_description_$${description}$_description_$
+);\n`;
+        this.testCount++;
+    }
+
+    livesOk(sql: string, description: string) {
+        this.sql += `select lives_ok(
+    $_sql_$${sql}$_sql_$,
+    $_description_$${description}$_description_$
+);\n`;
         this.testCount++;
     }
 

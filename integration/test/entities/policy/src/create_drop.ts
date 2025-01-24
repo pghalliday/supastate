@@ -1,5 +1,5 @@
 import {Supatest} from "@pghalliday/supatest";
-import {create, profilesTable, publicSchema, usersIdColumn} from "./supastates/create.js";
+import {create, ownerPolicy, profilesTable, publicSchema, usersIdColumn} from "./supastates/create.js";
 import {drop} from "./supastates/drop.js";
 
 export const supatest = new Supatest();
@@ -7,9 +7,9 @@ export const supatest = new Supatest();
 supatest.setSupastate(create);
 
 supatest.hasRLS(profilesTable);
-supatest.policies_are('public', 'profiles', array ['owner can do anything']);
-supatest.policy_roles_are('public', 'profiles', 'owner can do anything', array ['postgres', 'authenticated']);
-supatest.policy_cmd_is('public', 'profiles', 'owner can do anything'::name, 'ALL');
+supatest.policiesAre(profilesTable, ['owner can do anything']);
+supatest.policyRolesAre(ownerPolicy, ['postgres', 'authenticated']);
+supatest.policyCmdIs(ownerPolicy, 'ALL');
 
 supatest.setSupastate(drop);
 

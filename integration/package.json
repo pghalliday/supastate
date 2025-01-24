@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@pghalliday/supastate": "file:../supastate",
-    "@pghalliday/supatest": "file:../supatest"
+    "@pghalliday/supatest": "file:../supatest",
+    "@pghalliday/supasql": "file:../supasql"
   }
 }

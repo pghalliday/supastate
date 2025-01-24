@@ -22,8 +22,8 @@ const s1T1UserIdColumn = create.addColumn({table: s1T1Table, name: 'user_id', ty
 const s1T1UserForeignKey = create.addForeignKeyConstraint({table: s1T1Table, name: 'fk', columns: [s1T1UserIdColumn], otherTable: usersTable, otherColumns: [usersIdColumn]});
 supatest.setSupastate(create);
 
-supatest.fkOK(publicT1UserForeignKey);
-supatest.fkOK(s1T1UserForeignKey);
+supatest.fkOk(publicT1UserForeignKey);
+supatest.fkOk(s1T1UserForeignKey);
 
 const drop = new Supastate();
 supatest.setSupastate(drop);

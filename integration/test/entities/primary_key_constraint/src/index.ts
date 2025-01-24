@@ -18,14 +18,14 @@ const s1T1IdColumn = create.addColumn({table: s1T1Table, name: 'id', type: 'uuid
 const s1T1PrimaryKey = create.addPrimaryKeyConstraint({table: s1T1Table, name: 'pk', columns: [s1T1IdColumn]});
 supatest.setSupastate(create);
 
-supatest.colIsPK(usersIdColumn);
-supatest.colIsPK(publicT1IdColumn);
-supatest.colIsPK(s1T1IdColumn);
+supatest.colIsPk(usersIdColumn);
+supatest.colIsPk(publicT1IdColumn);
+supatest.colIsPk(s1T1IdColumn);
 
 const drop = new Supastate();
 supatest.setSupastate(drop);
 
-supatest.colIsPK(usersIdColumn);
+supatest.colIsPk(usersIdColumn);
 supatest.hasSchema(publicSchema);
 supatest.hasntTable(publicT1Table);
 supatest.hasntSchema(s1Schema);

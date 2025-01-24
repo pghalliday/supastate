@@ -1,4 +1,6 @@
 export {Entity} from "./entities/models/Entity.js";
+export {Entities} from "./entities/models/Entities.js";
+export {ExpressionReference} from "./entities/models/ExpressionReference.js";
 export {Role} from "./entities/models/Role.js";
 export {Schema} from "./entities/models/Schema.js";
 export {Table} from "./entities/models/Table.js";
