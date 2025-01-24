@@ -1,5 +1,13 @@
 import {Supastate} from "@pghalliday/supastate";
-import {Entity, Role, Schema, Table, Column, ForeignKeyConstraint, Policy} from "@pghalliday/supastate/entities";
+import {
+    Role,
+    Schema,
+    Table,
+    Column,
+    ForeignKeyConstraint,
+    Policy,
+    Entities
+} from "@pghalliday/supastate/entities";
 import {argv} from "node:process";
 import {mkdir, writeFile} from "node:fs/promises";
 import {dirname} from "node:path";
@@ -9,9 +17,13 @@ const {join, split, map} = _;
 
 export class Supatest {
     private testCount: number = 0;
-    knownEntities: Record<string, Entity> = {};
-    private currentEntities: Record<string, Entity> = {};
+    knownEntities: Entities = {};
+    private currentEntities: Entities = {};
     private sql: string = '';
+
+    execute(sql: string) {
+        this.sql += `${sql};\n`;
+    }
 
     setSupastate(supastate: Supastate) {
         this.sql += supastate.migrate(this.currentEntities);
@@ -23,36 +35,36 @@ export class Supatest {
     }
 
     hasRole(role: Role) {
-        this.sql += `select has_role('${role.name}');\n`;
+        this.sql += `SELECT has_role('${role.name}');\n`;
         this.testCount++;
     }
 
     hasntRole(role: Role) {
-        this.sql += `select hasnt_role('${role.name}');\n`;
+        this.sql += `SELECT hasnt_role('${role.name}');\n`;
         this.testCount++;
     }
 
     hasSchema(schema: Schema) {
-        this.sql += `select has_schema('${schema.name}');\n`;
+        this.sql += `SELECT has_schema('${schema.name}');\n`;
         this.testCount++;
     }
 
     hasntSchema(schema: Schema) {
-        this.sql += `select hasnt_schema('${schema.name}');\n`;
+        this.sql += `SELECT hasnt_schema('${schema.name}');\n`;
         this.testCount++;
     }
 
     hasTable(table: Table) {
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select has_table('${schema.name}', '${table.name}'::name);\n`;
+        this.sql += `SELECT has_table('${schema.name}', '${table.name}'::name);\n`;
         this.testCount++;
     }
 
     hasntTable(table: Table) {
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select hasnt_table('${schema.name}', '${table.name}'::name);\n`;
+        this.sql += `SELECT hasnt_table('${schema.name}', '${table.name}'::name);\n`;
         this.testCount++;
     }
 
@@ -61,7 +73,7 @@ export class Supatest {
         assert(table.entityType === 'table');
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select has_column(
+        this.sql += `SELECT has_column(
     '${schema.name}',
     '${table.name}',
     '${column.name}',
@@ -76,7 +88,7 @@ export class Supatest {
         assert(table.entityType === 'table');
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select col_is_pk(
+        this.sql += `SELECT col_is_pk(
     '${schema.name}',
     '${table.name}',
     '${column.name}',
@@ -105,7 +117,7 @@ export class Supatest {
         assert(otherTable.entityType === 'table');
         const otherSchema = this.knownEntities[otherTable.schemaId];
         assert(otherSchema.entityType === 'schema');
-        this.sql += `select fk_ok(
+        this.sql += `SELECT fk_ok(
     '${schema.name}',
     '${table.name}',
     array [${join(columnNames, ', ')}],
@@ -122,7 +134,7 @@ export class Supatest {
         assert(table.entityType === 'table');
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select col_not_null(
+        this.sql += `SELECT col_not_null(
     '${schema.name}',
     '${table.name}',
     '${column.name}'::name
@@ -136,7 +148,7 @@ export class Supatest {
         assert(table.entityType === 'table');
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select col_type_is(
+        this.sql += `SELECT col_type_is(
     '${schema.name}',
     '${table.name}',
     '${column.name}'::name,
@@ -149,7 +161,7 @@ export class Supatest {
     hasRLS(table: Table) {
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select st_has_rls('${schema.name}', '${table.name}'::name);\n`;
+        this.sql += `SELECT st_has_rls('${schema.name}', '${table.name}'::name);\n`;
         this.testCount++;
     }
 
@@ -157,7 +169,7 @@ export class Supatest {
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
         const quotedNames = map(policyNames, name => `'${name}'`)
-        this.sql += `select policies_are('${schema.name}', '${table.name}', array [${quotedNames.join(', ')}]);\n`;
+        this.sql += `SELECT policies_are('${schema.name}', '${table.name}', array [${quotedNames.join(', ')}]);\n`;
         this.testCount++;
     }
 
@@ -167,7 +179,7 @@ export class Supatest {
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
         const quotedRoles = map(policyRoles, role => `'${role}'`)
-        this.sql += `select policy_roles_are('${schema.name}', '${table.name}', '${policy.name}', array [${quotedRoles.join(', ')}]);\n`;
+        this.sql += `SELECT policy_roles_are('${schema.name}', '${table.name}', '${policy.name}', array [${quotedRoles.join(', ')}]);\n`;
         this.testCount++;
     }
 
@@ -176,24 +188,24 @@ export class Supatest {
         assert(table.entityType === 'table');
         const schema = this.knownEntities[table.schemaId];
         assert(schema.entityType === 'schema');
-        this.sql += `select policy_cmd_is('${schema.name}', '${table.name}', '${policy.name}'::name, '${cmd}');\n`;
+        this.sql += `SELECT policy_cmd_is('${schema.name}', '${table.name}', '${policy.name}'::name, '${cmd}');\n`;
         this.testCount++;
     }
 
     createSupabaseUser(userIdentifier: string) {
-        this.sql += `select tests.create_supabase_user('${userIdentifier}');\n`;
+        this.sql += `SELECT tests.create_supabase_user('${userIdentifier}');\n`;
     }
 
     authenticateAs(userIdentifier: string) {
-        this.sql += `select tests.authenticate_as('${userIdentifier}');\n`;
+        this.sql += `SELECT tests.authenticate_as('${userIdentifier}');\n`;
     }
 
     clearAuthentication() {
-        this.sql += `select tests.clear_authentication();\n`;
+        this.sql += `SELECT tests.clear_authentication();\n`;
     }
 
     throwsOk(sql: string, error: string, description: string) {
-        this.sql += `select throws_ok(
+        this.sql += `SELECT throws_ok(
     $_sql_$${sql}$_sql_$,
     $_error_$${error}$_error_$,
     $_description_$${description}$_description_$
@@ -202,8 +214,33 @@ export class Supatest {
     }
 
     livesOk(sql: string, description: string) {
-        this.sql += `select lives_ok(
+        this.sql += `SELECT lives_ok(
     $_sql_$${sql}$_sql_$,
+    $_description_$${description}$_description_$
+);\n`;
+        this.testCount++;
+    }
+
+    isEmpty(sql: string, description: string) {
+        this.sql += `SELECT is_empty(
+    $_sql_$${sql}$_sql_$,
+    $_description_$${description}$_description_$
+);\n`;
+        this.testCount++;
+    }
+
+    isntEmpty(sql: string, description: string) {
+        this.sql += `SELECT isnt_empty(
+    $_sql_$${sql}$_sql_$,
+    $_description_$${description}$_description_$
+);\n`;
+        this.testCount++;
+    }
+
+    setEq(sql: string, set: string[], description: string) {
+        this.sql += `SELECT set_eq(
+    $_sql_$${sql}$_sql_$,
+    array [${map(set, item => `'${item}'`).join(', ')}],
     $_description_$${description}$_description_$
 );\n`;
         this.testCount++;
@@ -212,18 +249,18 @@ export class Supatest {
     async writeSQL() {
         const sqlFile = argv[2];
         await mkdir(dirname(sqlFile), {recursive: true});
-        await writeFile(sqlFile, `begin;
+        await writeFile(sqlFile, `BEGIN;
 
-create extension if not exists pgtap with schema extensions cascade;
-create extension if not exists "basejump-supabase_test_helpers";
-create extension if not exists supatest with schema extensions cascade;
+CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions CASCADE;
+CREATE EXTENSION IF NOT EXISTS "basejump-supabase_test_helpers";
+CREATE EXTENSION IF NOT EXISTS supatest WITH SCHEMA public CASCADE;
 
-select plan(${this.testCount});
+SELECT plan(${this.testCount});
 
 ${this.sql}
-select * from finish();
+SELECT * FROM finish();
 
-rollback;
+ROLLBACK;
 `);
     }
 }

@@ -1,20 +1,22 @@
 import {Supatest} from "@pghalliday/supatest";
-import {getSupabaseUID, Insert} from "@pghalliday/supasql";
+import {Supasql} from "@pghalliday/supasql";
 import {create, profilesTable, profilesUserIdColumn} from "./supastates/create.js";
 
-export const supatest = new Supatest();
+const supatest = new Supatest();
+const supasql = new Supasql();
 
 supatest.setSupastate(create);
+supasql.addSupastate(create);
 
 supatest.createSupabaseUser('user_1');
 supatest.createSupabaseUser('user_2');
 supatest.clearAuthentication();
 
 supatest.throwsOk(
-    new Insert(supatest.knownEntities)
+    supasql.insert()
         .into(profilesTable)
         .columns([profilesUserIdColumn])
-        .values([getSupabaseUID('user_1')])
+        .values([supasql.getSupabaseUID('user_1')])
         .build(),
     'new row violates row-level security policy for table "profiles"',
     'Unauthenticated users should not be able to insert into profiles'
@@ -23,22 +25,22 @@ supatest.throwsOk(
 supatest.authenticateAs('user_1');
 
 supatest.throwsOk(
-    new Insert(supatest.knownEntities)
+    supasql.insert()
         .into(profilesTable)
         .columns([profilesUserIdColumn])
-        .values([getSupabaseUID('user_2')])
+        .values([supasql.getSupabaseUID('user_2')])
         .build(),
     'new row violates row-level security policy for table "profiles"',
     'Users should not be able to insert into profiles for other users'
 );
 
 supatest.livesOk(
-    new Insert(supatest.knownEntities)
+    supasql.insert()
         .into(profilesTable)
         .columns([profilesUserIdColumn])
-        .values([getSupabaseUID('user_1')])
+        .values([supasql.getSupabaseUID('user_1')])
         .build(),
     'Authenticated users should be able to insert into profiles for themselves'
 );
 
-supatest.writeSQL();
+await supatest.writeSQL();

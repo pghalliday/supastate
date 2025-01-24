@@ -9,7 +9,8 @@
     ".": "./lib/index.js",
     "./entities": "./lib/entities.js",
     "./controllers": "./lib/controllers.js",
-    "./patterns": "./lib/patterns.js",
+    "./patterns/ownership": "./lib/patterns/ownership.js",
+    "./patterns/policies": "./lib/patterns/policies.js",
     "./util": "./lib/util.js"
   },
   "bin": "./bin/index.js",

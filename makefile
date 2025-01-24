@@ -29,9 +29,6 @@ reset: build
 test: npm_build
 	$(MAKE) -C $(TEST_DIR) test
 
-test_all: npm_build
-	$(MAKE) -C $(TEST_DIR) test_all
-
 clean_migrations:
 	$(MAKE) -C $(SUPABASE_SRC_DIR) clean
 

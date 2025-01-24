@@ -1,0 +1,4 @@
+{
+  "./create_drop": "./lib/create_drop.js",
+  "./check_policies": "./lib/check_policies.js"
+}

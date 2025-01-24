@@ -36,11 +36,6 @@ SUPATEST_LIB_DIRS := \
 		%/$(SUPATEST_ENTRY_FILE), \
 		%/lib, \
 		$(SUPATEST_INPUT_FILES))
-SUPATEST_OUTPUT_FILES := \
-	$(patsubst \
-		%/$(SUPATEST_ENTRY_FILE), \
-		$(SUPATEST_OUTPUT_DIR)/%.sql, \
-		$(SUPATEST_INPUT_FILES))
 SUPATEST_DEPENDENCY_FILES := \
 	$(patsubst \
 		%/$(SUPATEST_ENTRY_FILE), \
@@ -51,8 +46,6 @@ SUPATEST_DEPENDENCY_DIRS := \
 	$(sort \
 	$(dir \
 		$(SUPATEST_DEPENDENCY_FILES))))
-
-build: $(SUPATEST_OUTPUT_FILES)
 
 clean:
 	@-rm -rf $(SUPATEST_BUILD_DIR)
@@ -75,9 +68,6 @@ include $(SUPATEST_JS_RULES_FILE)
 include $(SUPATEST_SQL_RULES_FILE)
 include $(SUPATEST_REPORT_RULES_FILE)
 endif
-
-test_all: build
-	supabase test db | tee $(SUPATEST_TEST_REPORT)
 
 $(SUPATEST_TEST_DIR) $(SUPATEST_DEPENDENCY_DIRS):
 	@mkdir -p $@

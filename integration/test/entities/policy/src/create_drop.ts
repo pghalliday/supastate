@@ -2,7 +2,7 @@ import {Supatest} from "@pghalliday/supatest";
 import {create, ownerPolicy, profilesTable, publicSchema, usersIdColumn} from "./supastates/create.js";
 import {drop} from "./supastates/drop.js";
 
-export const supatest = new Supatest();
+const supatest = new Supatest();
 
 supatest.setSupastate(create);
 
@@ -17,4 +17,4 @@ supatest.hasColumn(usersIdColumn);
 supatest.hasSchema(publicSchema);
 supatest.hasntTable(profilesTable);
 
-supatest.writeSQL();
+await supatest.writeSQL();
